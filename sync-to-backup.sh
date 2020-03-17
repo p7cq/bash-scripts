@@ -25,6 +25,9 @@
 # Directories owned by another user than the user running this script
 # must have the <dataset> directory owned by that other user on 
 # destination. This usually does not apply to root.
+#
+# The user running the script must be able to sudo as the users
+# defined in the backup map.
 
 start=$(date +%s.%N)
 declare -A map=(
