@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# slss: steam locomotive screensaver
+
+echo
+echo "to exit, press Ctrl-C and wait for the locomotive to pass"
+echo
+sleep 3
+
+clear
+trap "exit" INT
+declare -a ia=( "-a" "-l" "-F" "-c" "-al" "-aF" "-ac" "-lF" "-lc" "-alF" "-alc" "-lFc" "-alFc")
+for i in $(seq 1 8192); do
+   sl "${ia[$(shuf -i 1-${#ia[@]} -n 1) - 1]}"
+done
+
+exit 0
