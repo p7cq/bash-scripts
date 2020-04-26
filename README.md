@@ -8,4 +8,4 @@ Synchronizes content while preserving ownership of a directory (source) with ano
 
 ## slss
 
-A script to continously run ```sl```.
+A script to continuously run ```sl```.
