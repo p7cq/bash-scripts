@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+city=""
+wttr=$(/usr/bin/curl -s wttr.in/${city}?format=1)
+
+codepoint=$(/usr/bin/echo -n ${wttr:0:1} | /usr/bin/iconv -f utf8 -t utf32be | /usr/bin/xxd -p | /usr/bin/sed -r 's/^0+/0x/' | xargs printf 'U+%04X\n')
+case ${codepoint} in
+  U+1F324|U+1F325|U+26C5)
+      icon=''
+      ;;
+  U+02600|U+1F323)
+      icon=''
+      ;;
+  U+1F326)
+      icon=''
+      ;;
+  U+1F328)
+      icon=''
+      ;;
+  U+02608|U+1F329)
+      icon=''
+      ;;
+  U+02601)
+      icon=''
+      ;;
+  U+02602)
+      icon=''
+      ;;
+  U+1F327|U+026C6)
+      icon=''
+      ;;
+  U+026C8)
+      icon=''
+      ;;
+esac
+
+/usr/bin/echo "${icon} ${wttr:2:5}" > /var/run/wttr-in.cache
