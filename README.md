@@ -12,4 +12,4 @@ A script to continuously run ```sl```.
 
 ## wttr-in
 
-Replaced [wttr.in](https://github.com/chubin/wttr.in) icons with Font Awesome to match the theme of my bar in i3 WM. The script is run by a ```systemd``` timer every 15 minutes.
+Replaces [wttr.in](https://github.com/chubin/wttr.in) icons with Font Awesome to match the theme of my bar in i3 WM. The script is run by a ```systemd``` timer every 15 minutes.
