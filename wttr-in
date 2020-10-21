@@ -3,9 +3,9 @@
 city=""
 wttr=$(/usr/bin/curl -s wttr.in/${city}?format=1)
 
-codepoint=$(/usr/bin/echo -n ${wttr:0:1} | /usr/bin/iconv -f utf8 -t utf32be | /usr/bin/xxd -p | /usr/bin/sed -r 's/^0+/0x/' | xargs printf 'U+%04X\n')
+codepoint=$(echo -n ${wttr:0:1} | /usr/bin/iconv -f utf8 -t utf32be | /usr/bin/xxd -p | /usr/bin/sed -r 's/^0+/0x/' | xargs printf 'U+%05X\n')
 case ${codepoint} in
-  U+1F324|U+1F325|U+26C5)
+  U+1F324|U+1F325|U+026C5)
       icon=''
       ;;
   U+02600|U+1F323)
