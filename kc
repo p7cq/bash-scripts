@@ -4,7 +4,7 @@
 # A kubectl wrapper script
 #
 # Standard kubectl commands:
-#   kc c - kubectl describe
+#   kc d - kubectl describe
 #   kc e - kubectl edit
 #   kc x - kubectl exec
 #   kc g - kubectl get
