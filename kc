@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+
+#
+# A kubectl wrapper script
+#
+# Standard kubectl commands:
+#   kc c - kubectl describe
+#   kc e - kubectl edit
+#   kc x - kubectl exec
+#   kc g - kubectl get
+#   kc l - kubectl logs
+#
+# Custom kubectl commands:
+#   kc c
+#   kc o
+#
+
+all_args=("$@")
+
+case "${1}" in
+    "c")
+        kubectl exec --stdin --tty $(kubectl get pod -l app=mysql --no-headers -o custom-columns=":metadata.name") -- count-jobs.sh
+        exit 0
+        ;;
+    "d")
+        if [[ "${2}" == "p" || "${2}" == "pod" ]]; then
+            kubectl describe pod $(kubectl get pod -l app="${3}" --no-headers -o custom-columns=":metadata.name")
+            exit 0
+        fi
+        if [[ "${2}" == "j" || "${2}" == "job" ]]; then
+            kubectl describe job $(kubectl get pod -l app="${3}" --no-headers -o custom-columns=":metadata.name")
+            exit 0
+        fi
+        for ((i=1;i<=$#;i++)); do additional_args+=(${all_args[i]}); done
+        kubectl describe ${additional_args[*]}
+        exit 0
+        ;;
+    "e")
+        for ((i=1;i<=$#;i++)); do additional_args+=(${all_args[i]}); done
+        kubectl edit ${additional_args[*]}
+        exit 0
+        ;;
+    "g")
+        if [[ "${2}" == "a" ]]; then
+            kubectl get all -A
+            exit 0
+        fi
+        for ((i=1;i<=$#;i++)); do additional_args+=(${all_args[i]}); done
+        kubectl get ${additional_args[*]}
+        exit 0
+        ;;
+    "l")
+        for ((i=2;i<=$#;i++)); do additional_args+=(${all_args[i]}); done
+        kubectl logs $(kubectl get pod -l app="${2}" --no-headers -o custom-columns=":metadata.name") ${additional_args[*]}
+        exit 0
+        ;;
+    "o")
+        if [[ "${2}" == "--password-from-env" ]]; then
+            for ((i=2;i<=$#;i++)); do additional_args+=(${all_args[i]}); done
+            kubectl exec --stdin --tty $(kubectl get pod -l app=nextcloud --no-headers -o custom-columns=":metadata.name") -- su -s /bin/bash www-data -c "export OC_PASS=\"A$(uuidgen)\" && php /var/www/html/occ user:add --password-from-env ${additional_args[*]}"
+            exit 0
+        fi
+        for ((i=1;i<=$#;i++)); do additional_args+=(${all_args[i]}); done
+        kubectl exec --stdin --tty $(kubectl get pod -l app=nextcloud --no-headers -o custom-columns=":metadata.name") -- su -s /bin/bash www-data -c "php /var/www/html/occ ${additional_args[*]}"
+        exit 0
+        ;;
+    "x")
+        for ((i=2;i<=$#;i++)); do additional_args+=(${all_args[i]}); done
+        kubectl exec --stdin --tty $(kubectl get pod -l app="${2}" --no-headers -o custom-columns=":metadata.name") -- ${additional_args[*]}
+        exit 0
+        ;;
+    *)
+        echo -e "A kubectl wrapper script"
+        echo -e "\nStandard commands:"
+        echo -e "  d     kubectl [d]escribe"
+        echo -e "  d p   kubectl [d]escribe [p]od"
+        echo -e "  d j   kubectl [d]escribe [j]ob"
+        echo -e "  d p   kubectl [d]escribe [p]od"
+        echo -e "  e     kubectl [e]dit"
+        echo -e "  g     kubectl [g]et"
+        echo -e "  g a   kubectl [g]et all -A"
+        echo -e "  l     kubectl [l]ogs"
+        echo -e "  x     kubectl e[x]ec --stdin --tty POD --"
+        echo -e "          usage:   kc x (application name) (command)"
+        echo -e "          example: kc x mysql bash"
+        echo -e "\nCustom commands:"
+        echo -e "  c     count remaining background jobs"
+        echo -e "  o     run \"[o]wnCloud Console\" commands"
+        echo -e "          usage:   kc o (occ command)"
+        echo -e "          example: kc o theming:config name \\\"nextCloud \(Staging\)\\\""
+        echo -e "\n"
+        exit 0
+        ;;
+esac
