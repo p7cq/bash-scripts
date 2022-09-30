@@ -23,11 +23,11 @@ case "${1}" in
         exit 0
         ;;
     "d")
-        if [[ "${2}" == "p" || "${2}" == "pod" ]]; then
+        if [[ "${2}" == "p" ]]; then
             kubectl describe pod $(kubectl get pod -l app="${3}" --no-headers -o custom-columns=":metadata.name")
             exit 0
         fi
-        if [[ "${2}" == "j" || "${2}" == "job" ]]; then
+        if [[ "${2}" == "j" ]]; then
             kubectl describe job $(kubectl get pod -l app="${3}" --no-headers -o custom-columns=":metadata.name")
             exit 0
         fi
@@ -73,9 +73,8 @@ case "${1}" in
         echo -e "A kubectl wrapper script"
         echo -e "\nStandard commands:"
         echo -e "  d     kubectl [d]escribe"
-        echo -e "  d p   kubectl [d]escribe [p]od"
-        echo -e "  d j   kubectl [d]escribe [j]ob"
-        echo -e "  d p   kubectl [d]escribe [p]od"
+        echo -e "  d p   kubectl [d]escribe [p]od (application name)"
+        echo -e "  d j   kubectl [d]escribe [j]ob (application name)"
         echo -e "  e     kubectl [e]dit"
         echo -e "  g     kubectl [g]et"
         echo -e "  g a   kubectl [g]et all -A"
